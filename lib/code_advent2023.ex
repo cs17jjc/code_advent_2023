@@ -28,5 +28,28 @@ defmodule CodeAdvent2023 do
     lines |> Enum.map(&CodeAdvent2023.getFirstLastDigitWithText/1) |> Enum.sum()
   end
 
+  #Day 2 Part 1
+  def parseRBG(rgb) do
+    rgb
+    |> Enum.map(fn group -> Regex.scan(~r/(\d+)(red|green|blue)/, group) |> Enum.map(fn [_, digits, color] -> {color, digits} end) end)
+  end
+
+  def maxSeenRGBInGame(gameString) do
+    groups = Regex.replace(~r/\s/u, gameString <> ";0 red 0 blue 0 green", "")
+    |> String.split(":")
+    |> List.last()
+    |> String.split(";")
+    |> parseRBG
+    |> List.flatten
+
+    maxRed = Enum.filter(groups, fn {colour,_} -> colour == "red" end) |> Enum.map(fn {_,value} -> String.to_integer(value) end) |> Enum.max()
+    maxGreen = Enum.filter(groups, fn {colour,_} -> colour == "green" end) |> Enum.map(fn {_,value} -> String.to_integer(value) end) |> Enum.max()
+    maxBlue = Enum.filter(groups, fn {colour,_} -> colour == "blue" end) |> Enum.map(fn {_,value} -> String.to_integer(value) end) |> Enum.max()
+    {maxRed, maxGreen, maxBlue}
+  end
+
+  def everyColourSmallerThan(rgb,r,g,b) do
+    ans = elem(rgb,0) <= r && elem(rgb,1) <= g && elem(rgb,2) <= b
+  end
 
 end
