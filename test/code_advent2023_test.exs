@@ -81,4 +81,15 @@ defmodule CodeAdvent2023Test do
     assert CodeAdvent2023.everyColourSmallerThan({6, 3, 2},12,13,14)
   end
 
+  test "test string to map of coords and char and prevDigitIdx", context do
+    ans = [
+      {"1", true, 0, 0, 0},
+      {"2", true, 1, 1, 0},
+      {"3", false, 2, 2, 0},
+      {"*", false, 7, 2, 1},
+      {"8", false, 10, 0, 2}
+    ]
+    assert CodeAdvent2023.genMap("123..\n..*..\n8....") == ans
+  end
+
 end

@@ -52,4 +52,16 @@ defmodule CodeAdvent2023 do
     ans = elem(rgb,0) <= r && elem(rgb,1) <= g && elem(rgb,2) <= b
   end
 
+  #Day 3 Part 1
+  def genMap(input) do
+    ptr = {0,0}
+    map = %{}
+    linesHigh = String.length(hd(String.split(input, "\n")))
+    shiftedWasDigit = tl(String.graphemes(String.replace(input,"\n","") <> ".")) |> Enum.map(fn d -> String.match?(d, ~r/^\d$/) end)
+    Enum.with_index(String.graphemes(String.replace(input,"\n","")))
+    |> Enum.zip(shiftedWasDigit) |> Enum.map(fn {{a,b},c} -> {a,c,b} end)
+    |> Enum.filter(fn {c,_,_} -> c != "." end)
+    |> Enum.map(fn {c,b,i} -> {c,b,i,rem(i,linesHigh),trunc(i/linesHigh)} end)
+  end
+
 end
