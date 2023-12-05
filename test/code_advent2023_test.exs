@@ -70,7 +70,7 @@ defmodule CodeAdvent2023Test do
     assert Enum.map(context[:day2Part1Test],fn {q,_} -> q end) |> Enum.map(&CodeAdvent2023.maxSeenRGBInGame/1) == Enum.map(context[:day2Part1Test],fn {_,a} -> a end)
   end
 
-  test "test rgb smaller than", context do
+  test "test rgb smaller than" do
     assert CodeAdvent2023.everyColourSmallerThan({0,0,0},1,1,1)
     assert !CodeAdvent2023.everyColourSmallerThan({1,1,1},0,0,0)
 
@@ -81,7 +81,7 @@ defmodule CodeAdvent2023Test do
     assert CodeAdvent2023.everyColourSmallerThan({6, 3, 2},12,13,14)
   end
 
-  test "test string to map of coords and char and prevDigitIdx", context do
+  test "test string to map of coords and char and prevDigitIdx" do
     ans = [
       {"1", true, 0, 0, 0},
       {"2", true, 1, 1, 0},

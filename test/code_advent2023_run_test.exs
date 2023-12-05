@@ -22,7 +22,7 @@ defmodule CodeAdvent2023Run do
     IO.puts "d2p1 answer: #{answer}"
   end
 
-  #@tag :skip
+  @tag :skip
   test "day 2 part 2" do
     day2Path = File.cwd!()<>"/test/resources/day2.txt"
     maxRGBForGames = String.split(File.read!(day2Path),"\n") |> Enum.map(&CodeAdvent2023.maxSeenRGBInGame/1)

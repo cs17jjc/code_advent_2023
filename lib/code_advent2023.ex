@@ -54,8 +54,6 @@ defmodule CodeAdvent2023 do
 
   #Day 3 Part 1
   def genMap(input) do
-    ptr = {0,0}
-    map = %{}
     linesHigh = String.length(hd(String.split(input, "\n")))
     shiftedWasDigit = tl(String.graphemes(String.replace(input,"\n","") <> ".")) |> Enum.map(fn d -> String.match?(d, ~r/^\d$/) end)
     Enum.with_index(String.graphemes(String.replace(input,"\n","")))
