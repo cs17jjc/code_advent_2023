@@ -30,4 +30,10 @@ defmodule CodeAdvent2023Run do
     IO.puts "d2p2 answer: #{answer}"
   end
 
+  #@tag :skip
+  test "day 3 part 1" do
+    input = File.read!(File.cwd!()<>"/test/resources/day3.txt")
+    IO.puts "d3p1 answer: #{Enum.sum(CodeAdvent2023.allNumbersTouchingSymbol(CodeAdvent2023.genMap(input)))}"
+  end
+
 end

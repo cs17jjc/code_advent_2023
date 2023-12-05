@@ -23,7 +23,10 @@ defmodule CodeAdvent2023Test do
       "Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red" => {14,3,15},
       "Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green" => {6,3,2}
     }
-    {:ok, day1Part1Test: day1Part1Test, day1Part2Test: day1Part2Test, day2Part1Test: day2Part1Test}
+
+    day3Part1Test =
+   "467..114..\n...*......\n..35..633.\n......#...\n617*......\n.....+.58.\n..592.....\n......755.\n...$.*....\n.664.598.."
+    {:ok, day1Part1Test: day1Part1Test, day1Part2Test: day1Part2Test, day2Part1Test: day2Part1Test, day3Part1Test: day3Part1Test}
   end
 
   test "test get first and last digit", context do
@@ -90,6 +93,43 @@ defmodule CodeAdvent2023Test do
       {"8", false, 10, 0, 2}
     ]
     assert CodeAdvent2023.genMap("123..\n..*..\n8....") == ans
+  end
+  test "test map to numbers and positions" do
+    q = [
+      {"1", true, 0, 0, 0},
+      {"2", true, 1, 1, 0},
+      {"3", false, 2, 2, 0},
+      {"*", false, 7, 2, 1},
+      {"8", false, 10, 0, 2}
+    ]
+    assert CodeAdvent2023.mapToNumbersAndPositions(q) == [{123, [{0, 0}, {1, 0}, {2, 0}]}, {8, [{0, 2}]}]
+  end
+  test "test reduce location" do
+    assert CodeAdvent2023.reduceLocation({"1", true, 0, 0, 0},[]) == [{"1", [{0, 0}], 0}]
+    assert CodeAdvent2023.reduceLocation({"2", true, 1, 1, 0},[{"1", [{0, 0}], 0}]) == [{"12", [{0, 0}, {1, 0}], 1}]
+    assert CodeAdvent2023.reduceLocation({"3", true, 2, 1, 0},[{"12", [{0, 0}, {1, 0}], 1}]) == [{"123", [{0, 0}, {1, 0}, {1, 0}], 2}]
+    assert CodeAdvent2023.reduceLocation({"8", true, 10, 0, 2},[{"123", [{0, 0}, {1, 0}, {1, 0}], 2}]) == [{"123", [{0, 0}, {1, 0}, {1, 0}], 2}, {"8", [{0, 2}], 10}]
+  end
+  test "test map to touching symbol positions", context do
+    testMap = "...\n.*.\n..."
+    assert CodeAdvent2023.mapToPositionsTouchingSymbol(CodeAdvent2023.genMap(testMap)) == [{0, 0}, {1, 0}, {2, 0}, {0, 1}, {2, 1}, {0, 2}, {1, 2}, {2, 2}]
+    #IO.inspect CodeAdvent2023.mapToPositionsTouchingSymbol(CodeAdvent2023.genMap(context[:day3Part1Test]))
+  end
+
+  test "test all numbers touching symbol" do
+    testMap = "123..\n..*..\n....."
+    assert CodeAdvent2023.allNumbersTouchingSymbol(CodeAdvent2023.genMap(testMap)) == [123]
+    testMap = "1....\n..*..\n....8"
+    assert CodeAdvent2023.allNumbersTouchingSymbol(CodeAdvent2023.genMap(testMap)) == []
+    testMap = "1...8\n..*..\n..345"
+    assert CodeAdvent2023.allNumbersTouchingSymbol(CodeAdvent2023.genMap(testMap)) == [345]
+    testMap = "12.48\n..*..\n..345"
+    assert CodeAdvent2023.allNumbersTouchingSymbol(CodeAdvent2023.genMap(testMap)) == [12, 48, 345]
+  end
+  test "test day 3 test input", context do
+    ans = [467,35,633,617,592,755,664,598]
+    assert CodeAdvent2023.allNumbersTouchingSymbol(CodeAdvent2023.genMap(context[:day3Part1Test])) == ans
+    assert Enum.sum(CodeAdvent2023.allNumbersTouchingSymbol(CodeAdvent2023.genMap(context[:day3Part1Test]))) == 4361
   end
 
 end
