@@ -53,35 +53,36 @@ defmodule CodeAdvent2023 do
   end
 
   #Day 3 Part 1
-  def genMap(input) do
-    linesHigh = String.length(hd(String.split(input, ~r/\r?\n/)))
-    shiftedWasDigit = tl(String.graphemes(String.replace(input,~r/\r?\n/,"") <> ".")) |> Enum.map(fn d -> String.match?(d, ~r/^\d$/) end)
-    Enum.with_index(String.graphemes(String.replace(input,~r/\r?\n/,"")))
-    |> Enum.zip(shiftedWasDigit) |> Enum.map(fn {{a,b},c} -> {a,c,b} end)
-    |> Enum.filter(fn {c,_,_} -> c != "." end)
-    |> Enum.map(fn {c,b,i} -> {c,b,i,rem(i,linesHigh),trunc(i/linesHigh)} end)
+  def getImportantChars(input) do
+    shifted = ["\n"] ++ Enum.drop(String.graphemes(input),-1)
+    lineLength = input |> String.split(~r/\r?\n/, parts: 2) |> hd() |> String.length()
+    Enum.zip(String.graphemes(input),shifted)
+    |> Enum.filter(fn {c,_} -> !String.match?(c, ~r/[\n\r]/) end)
+    |> Enum.with_index |> Enum.map(fn {{a,b},c} -> {a,b,c} end)
+    |> Enum.map(fn {curChar,prevChar,index} -> {curChar,prevChar,index,rem(index,lineLength),trunc(index/lineLength)} end)
+    |> Enum.filter(fn {c,_,_,_,_} -> !String.match?(c, ~r/[\.]/) end)
   end
 
-  def reduceLocation(curr,acc) do
+  def reduceNumbers(curr,acc) do
     if length(acc) == 0 do
-      [{elem(curr,0),[{elem(curr,3),elem(curr,4)}],elem(curr,2)}]
+      [{elem(curr,0),[{elem(curr,3),elem(curr,4)}]}]
     else
       prev = List.last(acc)
-      if elem(prev,2)+1 == elem(curr,2) do
-        #this is next digit in number
-        new = {elem(prev,0)<>elem(curr,0),elem(prev,1)++[{elem(curr,3),elem(curr,4)}],elem(curr,2)}
+      #if prev char is digit then this digit is part of number
+      if String.match?(elem(curr,1),~r/\d/) do
+        new = { elem(prev,0)<>elem(curr,0), elem(prev,1) ++ [{elem(curr,3),elem(curr,4)}]}
         Enum.slice(acc, 0..-2) ++ [new]
       else
-        acc ++ [{elem(curr,0),[{elem(curr,3),elem(curr,4)}],elem(curr,2)}]
+        #starting new number
+        acc ++ [{elem(curr,0),[{elem(curr,3),elem(curr,4)}]}]
       end
     end
   end
-  def mapToNumbersAndPositions(map) do
+  def getNumbersAndPositions(map) do
     map
-    |> Enum.filter(fn {c,_,_,_,_} -> String.match?(c, ~r/^\d$/) end)
-    |> Enum.sort(fn {_, _, value1, _, _}, {_, _, value2, _, _} -> value1 <= value2 end)
-    |> Enum.reduce([],&CodeAdvent2023.reduceLocation/2)
-    |> Enum.map(fn {a,b,_} -> {String.to_integer(a),b} end)
+    |> Enum.filter(fn {c,_,_,_,_} -> String.match?(c,~r/\d/) end)
+    |> Enum.reduce([],&CodeAdvent2023.reduceNumbers/2)
+    |> Enum.map(fn {n,p} -> {String.to_integer(n),p} end)
   end
 
   def mapToPositionsTouchingSymbol(map) do
@@ -92,13 +93,13 @@ defmodule CodeAdvent2023 do
     |> Enum.uniq()
   end
 
-  def allNumbersTouchingSymbol(map) do
-    numbersAndPositions = mapToNumbersAndPositions(map)
-    symbolPositions = mapToPositionsTouchingSymbol(map)
+  def allTouchingSymbol(map) do
+  numbersAndPositions = getNumbersAndPositions(map)
+  positionsTouchingSymbol = mapToPositionsTouchingSymbol(map)
 
-    numbersAndPositions
-    |> Enum.filter(fn {number,positions} -> Enum.any?(positions,fn p -> Enum.member?(symbolPositions, p) end) end)
-    |> Enum.map(fn {n,_} -> n end)
+  numbersAndPositions
+  |> Enum.filter(fn {_,positions} -> Enum.any?(positions, fn p -> Enum.member?(positionsTouchingSymbol,p)end ) end)
+  |> Enum.map(fn {n,_} -> n end)
   end
 
 end
