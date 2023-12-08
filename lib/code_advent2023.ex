@@ -1,6 +1,6 @@
 defmodule CodeAdvent2023 do
 
-  #Day 1 Part 1
+  #Day 1
   def getFirstLastDigit(line) do
     digits = List.flatten(Regex.scan(~r/\d/, line))
     String.to_integer(List.first(digits,"0") <> List.last(digits,"0"))
@@ -9,7 +9,6 @@ defmodule CodeAdvent2023 do
     lines |> Enum.map(&CodeAdvent2023.getFirstLastDigit/1) |> Enum.sum()
   end
 
-  #Day 1 Part 2
   def textOrDigitToDigit(tOrD) do
     if Regex.match?(~r/\d/, tOrD) do
       tOrD
@@ -28,7 +27,7 @@ defmodule CodeAdvent2023 do
     lines |> Enum.map(&CodeAdvent2023.getFirstLastDigitWithText/1) |> Enum.sum()
   end
 
-  #Day 2 Part 1
+  #Day 2
   def parseRBG(rgb) do
     rgb
     |> Enum.map(fn group -> Regex.scan(~r/(\d+)(red|green|blue)/, group) |> Enum.map(fn [_, digits, color] -> {color, digits} end) end)
@@ -52,7 +51,7 @@ defmodule CodeAdvent2023 do
     ans = elem(rgb,0) <= r && elem(rgb,1) <= g && elem(rgb,2) <= b
   end
 
-  #Day 3 Part 1
+  #Day 3
   def getImportantChars(input) do
     shifted = ["\n"] ++ Enum.drop(String.graphemes(input),-1)
     lineLength = input |> String.split(~r/\r?\n/, parts: 2) |> hd() |> String.length()
@@ -121,6 +120,25 @@ defmodule CodeAdvent2023 do
     end)
     |> Enum.map(fn e -> e |> Enum.map(fn {n,_} -> n end) end)
 
+  end
+
+  #Day 4
+  def getWinsForCard(line) do
+    [winning | given] = tl(String.split(line, ~r/[:|]/)) |> Enum.map(fn s -> s |> String.split( ~r/ /,trim: true) |> Enum.map(&String.to_integer/1) end)
+    length(winning |> Enum.filter(fn w -> Enum.member?(hd(given), w) end))
+  end
+
+  def getCardPoints(cardWins) do
+    if cardWins == 0 do
+      0
+    else
+      Integer.pow(2,cardWins-1)
+    end
+  end
+
+  def calcCopies(cardWinsList) do
+    #number of copies = cards above with idx+wins < current idx
+    withFurthestCopyIdx = Enum.with_index(cardWinsList) |> Enum.map(fn {wins,idx} -> {wins,idx,wins+idx} end)
   end
 
 end

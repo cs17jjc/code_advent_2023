@@ -30,6 +30,7 @@ defmodule CodeAdvent2023Run do
     IO.puts "d2p2 answer: #{answer}"
   end
 
+  @tag :skip
   test "day 3 part 1" do
     day3Path = File.cwd!()<>"/test/resources/day3.txt"
     map = CodeAdvent2023.getImportantChars(File.read!(day3Path))
@@ -37,11 +38,21 @@ defmodule CodeAdvent2023Run do
     IO.puts "d3p1 answer: #{answer}"
   end
 
+  @tag :skip
   test "day 3 part 2" do
     day3Path = File.cwd!()<>"/test/resources/day3.txt"
     map = CodeAdvent2023.getImportantChars(File.read!(day3Path))
     answer =  CodeAdvent2023.allGearsTouchingTwoNumbers(map) |> Enum.filter(fn numbersTouching -> length(numbersTouching) == 2 end) |> Enum.map(&Enum.product/1) |> Enum.sum
     IO.puts "d3p2 answer: #{answer}"
   end
+
+    test "day 4 part 1" do
+      day4Path = File.cwd!()<>"/test/resources/day4.txt"
+      answer = String.split(File.read!(day4Path),~r/[\n\r]/,trim: true)
+      |> Enum.map(&CodeAdvent2023.getWinsForCard/1)
+      |> Enum.map(&CodeAdvent2023.getCardPoints/1)
+      |> Enum.sum
+      IO.puts "d4p1 answer: #{answer}"
+    end
 
 end

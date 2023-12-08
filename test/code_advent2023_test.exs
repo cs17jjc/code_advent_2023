@@ -26,7 +26,15 @@ defmodule CodeAdvent2023Test do
 
     day3Part1Test =
    "467..114..\n...*......\n..35..633.\n......#...\n617*......\n.....+.58.\n..592.....\n......755.\n...$.*....\n.664.598.."
-    {:ok, day1Part1Test: day1Part1Test, day1Part2Test: day1Part2Test, day2Part1Test: day2Part1Test, day3Part1Test: day3Part1Test}
+
+    day4Part1Test = [
+    "Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53",
+    "Card 2: 13 32 20 16 61 | 61 30 68 82 17 32 24 19",
+    "Card 3:  1 21 53 59 44 | 69 82 63 72 16 21 14  1",
+    "Card 4: 41 92 73 84 69 | 59 84 76 51 58  5 54 83",
+    "Card 5: 87 83 26 28 32 | 88 30 70 12 93 22 82 36",
+    "Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11"]
+    {:ok, day1Part1Test: day1Part1Test, day1Part2Test: day1Part2Test, day2Part1Test: day2Part1Test, day3Part1Test: day3Part1Test, day4Part1Test: day4Part1Test}
   end
 
   test "test get first and last digit", context do
@@ -129,6 +137,15 @@ defmodule CodeAdvent2023Test do
     map = CodeAdvent2023.getImportantChars(context[:day3Part1Test])
     assert CodeAdvent2023.allGearsTouchingTwoNumbers(map) |> Enum.filter(fn numbersTouching -> length(numbersTouching) == 2 end) == [[467, 35], [755, 598]]
     assert CodeAdvent2023.allGearsTouchingTwoNumbers(map) |> Enum.filter(fn numbersTouching -> length(numbersTouching) == 2 end) |> Enum.map(&Enum.product/1) |> Enum.sum == 467835
+  end
+
+  test "test parse card line", context do
+    context[:day4Part1Test] |> Enum.zip([8,2,2,1,0,0])
+    |> Enum.each(fn {q,a} -> assert CodeAdvent2023.getCardPoints(CodeAdvent2023.getWinsForCard(q)) == a end)
+  end
+
+  test "test calc copies", context do
+    IO.inspect CodeAdvent2023.calcCopies([2,1,0,0])
   end
 
 end
