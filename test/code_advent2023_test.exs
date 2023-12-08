@@ -112,4 +112,23 @@ defmodule CodeAdvent2023Test do
     assert Enum.sum(CodeAdvent2023.allTouchingSymbol(map)) == 4361
   end
 
+  test "test map to gear positions" do
+    testMap = "...\n.*.\n..."
+    assert CodeAdvent2023.getTouchingGearPositions(CodeAdvent2023.getImportantChars(testMap)) == [[{0, 0}, {1, 0}, {2, 0}, {0, 1}, {2, 1}, {0, 2}, {1, 2}, {2, 2}]]
+  end
+
+  test "test numbers touching gears" do
+    testMap = "12..\n..*.\n3..."
+    assert CodeAdvent2023.allGearsTouchingTwoNumbers(CodeAdvent2023.getImportantChars(testMap)) == [[12]]
+    testMap = "12..\n..*.\n..34"
+    assert CodeAdvent2023.allGearsTouchingTwoNumbers(CodeAdvent2023.getImportantChars(testMap)) == [[12, 34]]
+  end
+
+  test "test day 3 part 2 test input", context do
+    ans = [467,35,633,617,592,755,664,598]
+    map = CodeAdvent2023.getImportantChars(context[:day3Part1Test])
+    assert CodeAdvent2023.allGearsTouchingTwoNumbers(map) |> Enum.filter(fn numbersTouching -> length(numbersTouching) == 2 end) == [[467, 35], [755, 598]]
+    assert CodeAdvent2023.allGearsTouchingTwoNumbers(map) |> Enum.filter(fn numbersTouching -> length(numbersTouching) == 2 end) |> Enum.map(&Enum.product/1) |> Enum.sum == 467835
+  end
+
 end

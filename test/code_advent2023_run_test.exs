@@ -37,4 +37,11 @@ defmodule CodeAdvent2023Run do
     IO.puts "d3p1 answer: #{answer}"
   end
 
+  test "day 3 part 2" do
+    day3Path = File.cwd!()<>"/test/resources/day3.txt"
+    map = CodeAdvent2023.getImportantChars(File.read!(day3Path))
+    answer =  CodeAdvent2023.allGearsTouchingTwoNumbers(map) |> Enum.filter(fn numbersTouching -> length(numbersTouching) == 2 end) |> Enum.map(&Enum.product/1) |> Enum.sum
+    IO.puts "d3p2 answer: #{answer}"
+  end
+
 end

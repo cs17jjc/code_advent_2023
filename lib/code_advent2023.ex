@@ -102,4 +102,25 @@ defmodule CodeAdvent2023 do
   |> Enum.map(fn {n,_} -> n end)
   end
 
+  def getTouchingGearPositions(map) do
+    map
+    |> Enum.filter(fn {c,_,_,_,_} -> String.match?(c,~r/\*/) end)
+    |> Enum.map(fn {c,_,_,x,y} -> [{x-1,y-1},{x+0,y-1},{x+1,y-1},{x-1,y+0},{x+1,y+0},{x-1,y+1},{x+0,y+1},{x+1,y+1}] end)
+  end
+
+  def allGearsTouchingTwoNumbers(map) do
+    numbersAndPositions = getNumbersAndPositions(map)
+    gearPositions = getTouchingGearPositions(map)
+
+    #map gear positions into all numbers with position in gear positions list
+    gearPositions
+    |> Enum.map(fn gPosList ->
+      #Every number which has a position in this list
+      numbersAndPositions
+      |> Enum.filter(fn {_,numPosList} -> numPosList |> Enum.any?(fn numPos -> Enum.member?(gPosList,numPos) end ) end)
+    end)
+    |> Enum.map(fn e -> e |> Enum.map(fn {n,_} -> n end) end)
+
+  end
+
 end
