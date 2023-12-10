@@ -138,7 +138,12 @@ defmodule CodeAdvent2023 do
 
   def calcCopies(cardWinsList) do
     #number of copies = cards above with idx+wins < current idx
-    withFurthestCopyIdx = Enum.with_index(cardWinsList) |> Enum.map(fn {wins,idx} -> {wins,idx,wins+idx} end)
+    withFurthestCopyIdx = Enum.with_index(cardWinsList)
+    #any idxs that are less than wins+idx shoudl have a copy
+    |> Enum.map(fn {wins,idx} -> {wins,idx,wins+idx} end)
+    #so like, for each card wanna filter withFurthestCopyIdx for any cards that are above the current and also current < furestCopyIdx
+    withFurthestCopyIdx
+    |> Enum.map(fn {wins,idx,_} -> {wins,1 + length(Enum.filter(withFurthestCopyIdx,fn {_,prevIdx,furthestCopyIdx} -> idx > prevIdx && idx <= furthestCopyIdx end))} end)
   end
 
 end

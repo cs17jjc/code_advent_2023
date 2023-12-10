@@ -145,7 +145,16 @@ defmodule CodeAdvent2023Test do
   end
 
   test "test calc copies", context do
-    IO.inspect CodeAdvent2023.calcCopies([2,1,0,0])
+    assert CodeAdvent2023.calcCopies([2,1,0,0]) == [{2, 1}, {1, 2}, {0, 3}, {0, 1}]
+    assert CodeAdvent2023.calcCopies([0,0]) == [{0, 1}, {0, 1}]
+    assert CodeAdvent2023.calcCopies([4, 3, 2, 1, 0, 0, 0, 0 ]) == [{4, 1}, {3, 2}, {2, 3}, {1, 4}, {0, 5}, {0, 1}, {0, 1}, {0, 1}]
+  end
+
+  test "test calc copies 2", context do
+    context[:day4Part1Test]
+    |> Enum.map(fn q -> CodeAdvent2023.getWinsForCard(q) end)
+    |> CodeAdvent2023.calcCopies
+    |> IO.inspect
   end
 
 end
