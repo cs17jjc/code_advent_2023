@@ -136,14 +136,20 @@ defmodule CodeAdvent2023 do
     end
   end
 
-  def calcCopies(cardWinsList) do
-    #number of copies = cards above with idx+wins < current idx
-    withFurthestCopyIdx = Enum.with_index(cardWinsList)
-    #any idxs that are less than wins+idx shoudl have a copy
-    |> Enum.map(fn {wins,idx} -> {wins,idx,wins+idx} end)
-    #so like, for each card wanna filter withFurthestCopyIdx for any cards that are above the current and also current < furestCopyIdx
-    withFurthestCopyIdx
-    |> Enum.map(fn {wins,idx,_} -> {wins,1 + length(Enum.filter(withFurthestCopyIdx,fn {_,prevIdx,furthestCopyIdx} -> idx > prevIdx && idx <= furthestCopyIdx end))} end)
+  def getPrevCardsContributingCopies(cur, acc) do
+    acc |> Enum.filter(fn {prevIdx,prevWins,_} -> elem(cur,0) <= prevIdx+prevWins end)
+  end
+
+  def cardCopiesReduce([], cur), do: [cur]
+  def cardCopiesReduce(cur,acc) do
+    contributingCopies =   getPrevCardsContributingCopies(cur,acc)
+    totalCopies = contributingCopies |> Enum.map(fn {_,_,c} -> c end) |> Enum.sum
+    acc ++ [{elem(cur,0),elem(cur,1),elem(cur,2) + totalCopies}]
+  end
+
+  def getCardCopies(cardWins) do
+    idxWinsCopies = Enum.zip([0..(length(cardWins) - 1),cardWins,List.duplicate(1, length(cardWins))])
+    idxWinsCopies |> Enum.reduce([],&CodeAdvent2023.cardCopiesReduce/2)
   end
 
 end

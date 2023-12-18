@@ -144,17 +144,46 @@ defmodule CodeAdvent2023Test do
     |> Enum.each(fn {q,a} -> assert CodeAdvent2023.getCardPoints(CodeAdvent2023.getWinsForCard(q)) == a end)
   end
 
-  test "test calc copies", context do
-    assert CodeAdvent2023.calcCopies([2,1,0,0]) == [{2, 1}, {1, 2}, {0, 3}, {0, 1}]
-    assert CodeAdvent2023.calcCopies([0,0]) == [{0, 1}, {0, 1}]
-    assert CodeAdvent2023.calcCopies([4, 3, 2, 1, 0, 0, 0, 0 ]) == [{4, 1}, {3, 2}, {2, 3}, {1, 4}, {0, 5}, {0, 1}, {0, 1}, {0, 1}]
+  test "test get copy contributing cards function" do
+    assert CodeAdvent2023.getPrevCardsContributingCopies({0,0,0},[]) == []
+    assert CodeAdvent2023.getPrevCardsContributingCopies({1,0,0},[{0,0,0}]) == []
+    assert CodeAdvent2023.getPrevCardsContributingCopies({1,0,0},[{0,1,0}]) == [{0,1,0}]
+    assert CodeAdvent2023.getPrevCardsContributingCopies({2,0,0},[{0,1,0},{1,0,0}]) == []
+    assert CodeAdvent2023.getPrevCardsContributingCopies({2,0,0},[{0,1,0},{1,1,0}]) == [{1,1,0}]
+    assert CodeAdvent2023.getPrevCardsContributingCopies({2,0,0},[{0,2,0},{1,1,0}]) == [{0,2,0},{1,1,0}]
   end
 
-  test "test calc copies 2", context do
-    context[:day4Part1Test]
-    |> Enum.map(fn q -> CodeAdvent2023.getWinsForCard(q) end)
-    |> CodeAdvent2023.calcCopies
-    |> IO.inspect
+  test "test get card copies reduce" do
+    assert CodeAdvent2023.cardCopiesReduce({0,0,1},[]) == [{0,0,1}]
+    assert CodeAdvent2023.cardCopiesReduce({1,0,1},[{0,0,1}]) == [{0,0,1},{1,0,1}]
+    assert CodeAdvent2023.cardCopiesReduce({1,0,1},[{0,1,1}]) == [{0,1,1},{1,0,2}]
+    assert CodeAdvent2023.cardCopiesReduce({2,0,1},[{0,1,1},{1,0,2}]) == [{0,1,1},{1,0,2},{2,0,1}]
+    assert CodeAdvent2023.cardCopiesReduce({2,0,1},[{0,1,1},{1,1,2}]) == [{0,1,1},{1,1,2},{2,0,3}]
+    assert CodeAdvent2023.cardCopiesReduce({2,0,1},[{0,2,1},{1,0,2}]) == [{0,2,1},{1,0,2},{2,0,2}]
+    assert CodeAdvent2023.cardCopiesReduce({2,0,1},[{0,2,1},{1,1,2}]) == [{0,2,1},{1,1,2},{2,0,4}]
+  end
+
+  test "test card copies" do
+    assert CodeAdvent2023.getCardCopies([4,2,1,0,0]) == [{0, 4, 1}, {1, 2, 2}, {2, 1, 4}, {3, 0, 8}, {4, 0, 2}]
+
+    assert CodeAdvent2023.getCardCopies([0]) == [{0, 0, 1}]
+    assert CodeAdvent2023.getCardCopies([0,1]) == [{0, 0, 1},{1, 1, 1}]
+    assert CodeAdvent2023.getCardCopies([0,1,1]) == [{0, 0, 1},{1, 1, 1},{2, 1, 2}]
+    assert CodeAdvent2023.getCardCopies([0,1,1,1]) == [{0, 0, 1},{1, 1, 1},{2, 1, 2},{3, 1, 3}]
+    assert CodeAdvent2023.getCardCopies([0,0,1,1]) == [{0, 0, 1},{1, 0, 1},{2, 1, 1},{3, 1, 2}]
+
+    assert CodeAdvent2023.getCardCopies([0,4,0,0,0,0,0]) == [{0, 0, 1}, {1, 4, 1}, {2, 0, 2}, {3, 0, 2}, {4, 0, 2}, {5, 0, 2}, {6, 0, 1}]
+    assert CodeAdvent2023.getCardCopies([1,4,0,0,0,0,0]) == [{0, 1, 1}, {1, 4, 2}, {2, 0, 3}, {3, 0, 3}, {4, 0, 3}, {5, 0, 3}, {6, 0, 1}]
+
+    assert CodeAdvent2023.getCardCopies([6,5,4,3,2,1,0]) == [{0, 6, 1}, {1, 5, 2}, {2, 4, 4}, {3, 3, 8}, {4, 2, 16}, {5, 1, 32}, {6, 0, 64}]
+  end
+
+  test "test day 4 part 2", context do
+    ans = context[:day4Part1Test] |> Enum.map(&CodeAdvent2023.getWinsForCard/1)
+    |> CodeAdvent2023.getCardCopies
+    |> Enum.map(fn {_,_,c} -> c end)
+    assert ans == [1, 2, 4, 8, 14, 1]
+    assert ans |> Enum.sum == 30
   end
 
 end

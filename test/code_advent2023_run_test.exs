@@ -56,14 +56,12 @@ defmodule CodeAdvent2023Run do
     IO.puts "d4p1 answer: #{answer}"
   end
 
-  test "day 4 part 2" do
+  test "day 4 part 2", context do
     day4Path = File.cwd!()<>"/test/resources/day4.txt"
     answer = String.split(File.read!(day4Path),~r/[\n\r]/,trim: true)
     |> Enum.map(&CodeAdvent2023.getWinsForCard/1)
-    |> CodeAdvent2023.calcCopies
-    |> IO.inspect
-    |> Enum.map(fn {w,c} -> CodeAdvent2023.getCardPoints(w)*c end)
-    |> Enum.sum
+    |> CodeAdvent2023.getCardCopies
+    |> Enum.map(fn {_,_,c} -> c end) |> Enum.sum
     IO.puts "d4p2 answer: #{answer}"
   end
 
